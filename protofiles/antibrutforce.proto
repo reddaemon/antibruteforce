@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package schema;
+
+option go_package = "api";
+
+service AntiBrutforce {
+    rpc Auth (AuthRequest) returns (AuthResponse) {
+    }
+    rpc Drop (DropRequest) returns (DropResponse) {
+    }
+    rpc AddToBlacklist (AddToBlacklistRequest) returns (AddToBlacklistResponse) {
+    }
+    rpc RemoveFromBlacklist (RemoveFromBlacklistRequest) returns (RemoveFromBlacklistResponse) {
+    }
+    rpc AddToWhiteList (AddToWhitelistRequest) returns (AddToWhitelistResponse) {
+    }
+    rpc RemoveFromWhitelist (RemoveFromWhitelistRequest) returns (RemoveFromWhitelistResponse) {
+    }
+}
+
+message AuthRequest {
+    string login = 1;
+    string password = 2;
+    string ip = 3;
+}
+
+message AuthResponse {
+    bool ok = 1;
+}
+
+message DropRequest {
+    string login = 1;
+    string ip = 2;
+}
+
+message DropResponse {
+    bool ok = 1;
+}
+
+message AddToBlacklistRequest {
+    string subnet = 1;
+}
+
+message AddToBlacklistResponse {
+    bool ok = 1;
+}
+
+message RemoveFromBlacklistRequest {
+    string subnet = 1;
+}
+
+message RemoveFromBlacklistResponse {
+    bool ok = 1;
+}
+
+message AddToWhitelistRequest {
+    string subnet = 1;
+}
+
+message AddToWhitelistResponse {
+    bool ok = 1;
+}
+
+message RemoveFromWhitelistRequest {
+    string subnet = 1;
+}
+
+message RemoveFromWhitelistResponse {
+    bool ok = 1;
+}
