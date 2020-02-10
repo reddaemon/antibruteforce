@@ -42,12 +42,14 @@ func (r *MemRepo) initCleaner() {
 func NewMemRepo(logger *zap.Logger) *MemRepo {
 	r := &MemRepo{buckets: make(map[string]*Bucket, 1024), l: logger}
 	r.initCleaner()
+
 	return r
 }
 
 func (r *MemRepo) Add(ctx context.Context, key string, capacity uint, rate time.Duration) error {
 	r.mutex.Lock()
 	b, ok := r.buckets[key]
+
 	if !ok {
 		b = &Bucket{
 			Capacity:  capacity,
@@ -58,6 +60,7 @@ func (r *MemRepo) Add(ctx context.Context, key string, capacity uint, rate time.
 
 		r.buckets[key] = b
 		r.mutex.Unlock()
+
 		return nil
 	}
 	r.mutex.Unlock()
@@ -68,7 +71,7 @@ func (r *MemRepo) Add(ctx context.Context, key string, capacity uint, rate time.
 	}
 
 	if b.Remaining == 0 {
-		return errors.New("Buffer overflow")
+		return errors.New("buffer overflow")
 	}
 
 	b.Remaining--
@@ -85,6 +88,7 @@ func (r *MemRepo) Drop(ctx context.Context, keys []string) error {
 
 		b.Remaining = b.Capacity
 	}
+
 	return nil
 }
 
@@ -93,6 +97,8 @@ func (r *MemRepo) CleanStorage() error {
 	for k := range r.buckets {
 		delete(r.buckets, k)
 	}
+
 	r.mutex.Lock()
+
 	return nil
 }

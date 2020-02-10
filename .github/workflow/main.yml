@@ -1,0 +1,8 @@
+name: Antibruteforce service
+on: [push]
+
+jobs:
+  golangci-lint:
+    image: "golangci/golangci-lint"
+    steps:
+    -

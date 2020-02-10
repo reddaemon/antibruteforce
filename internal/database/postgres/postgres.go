@@ -20,11 +20,11 @@ type Repository interface {
 }
 
 type PsqlRepository struct {
-	*sqlx.DB
-	logger *zap.Logger
+	*sqlx.DB //nolint
+	logger   *zap.Logger
 }
 
-func NewPsqlRepository(DB *sqlx.DB, logger *zap.Logger) *PsqlRepository {
+func NewPsqlRepository(DB *sqlx.DB, logger *zap.Logger) *PsqlRepository { // nolint
 	return &PsqlRepository{DB: DB, logger: logger}
 }
 
@@ -42,7 +42,7 @@ func (p PsqlRepository) RemoveFromBlacklist(ctx context.Context, subnet string) 
 	return err
 }
 
-func (p PsqlRepository) AddTowhitelist(ctx context.Context, subnet string) error {
+func (p PsqlRepository) AddToWhitelist(ctx context.Context, subnet string) error {
 	query := `INSERT INTO whitelist (subnet) VALUES ($1)`
 	_, err := p.DB.ExecContext(ctx, query, subnet)
 
@@ -70,6 +70,7 @@ func (p PsqlRepository) FindIP(ctx context.Context, ip string) (string, error) {
 	if err != nil && err != sql.ErrNoRows {
 		return "", err
 	}
+
 	switch len(list) {
 	case 0:
 		return "", nil
@@ -78,7 +79,5 @@ func (p PsqlRepository) FindIP(ctx context.Context, ip string) (string, error) {
 	default:
 		p.logger.Info(fmt.Sprintf("ip: %s in more than one list. lists: %v", ip, list))
 		return "blacklist", nil
-
 	}
-
 }

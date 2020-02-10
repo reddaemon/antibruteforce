@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/reddaemon/antibrutforce/config"
+	"github.com/reddaemon/antibruteforce/config"
 )
 
 func GetDb(c *config.Config) (*sqlx.DB, error) {

@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  antibruteforce:
+    build:
+      context: ../..
+      dockerfile: docker/service/Dockerfile
+    ports:
+      - 8080:8080
+    volumes:
+      - ../../config.yml:/opt/antibruteforce/config.yaml
+    networks:
+      - db
+    depends_on:
+      - postgres
+    restart: on-failure
+
+  postgres:
+    image: "postgres:11-alpine"
+    environment:
+      - POSTGRES_USER=antibruteforce
+      - POSTGRES_PASSWORD=changeme
+      - POSTGRES_DB=antibruteforce
+    ports:
+      - "5432:5432"
+    volumes:
+      - ../../db/migrations/001.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - db
+
+networks:
+  db:
+    driver: bridge

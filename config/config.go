@@ -26,12 +26,13 @@ func (c *Config) IsProd() bool {
 	return c.Environment == "prod"
 }
 
-func (c *Config) isDev() bool {
+func (c *Config) IsDev() bool {
 	return c.Environment == "dev"
 }
 
 func GetConfig(configPath string) (*Config, error) {
 	var config Config
+
 	splits := strings.Split(filepath.Base(configPath), ".")
 	viper.SetConfigName(filepath.Base(splits[0]))
 	viper.AddConfigPath(filepath.Dir(configPath))
@@ -40,12 +41,16 @@ func GetConfig(configPath string) (*Config, error) {
 	if err != nil {
 		log.Fatalf("Unable to read config %s", err)
 	}
+
 	err = viper.Unmarshal(&config)
+
 	if err != nil {
 		log.Fatalf("Unable to unmarshal config: %v", err)
 	}
+
 	if config.Environment == "" {
 		log.Fatal("Unable to find environment parameter in config")
 	}
+
 	return &config, nil
 }

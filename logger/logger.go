@@ -1,17 +1,20 @@
 package logger
 
 import (
-	"github.com/reddaemon/antibrutforce/config"
+	"github.com/reddaemon/antibruteforce/config"
 	"go.uber.org/zap"
 )
 
 func GetLogger(cfg *config.Config) (*zap.Logger, error) {
 	var err error
+
 	var l *zap.Logger
+
 	if !cfg.Debug {
 		l = zap.NewNop()
 		return l, nil
 	}
+
 	switch cfg.Environment {
 	case "production":
 		l, err = zap.NewProduction()

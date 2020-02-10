@@ -14,6 +14,7 @@ require (
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.6.2
 	go.uber.org/zap v1.13.0
+	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 	google.golang.org/grpc v1.21.0
 )

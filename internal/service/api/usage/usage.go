@@ -1,4 +1,4 @@
-package service
+package usage
 
 import (
 	"context"
@@ -24,20 +24,20 @@ type Usage interface {
 	RemoveFromWhitelist(ctx context.Context, subnet string) error
 }
 
-type UsageStr struct {
+type Handler struct {
 	repo       postgres.Repository
 	bucketRepo bucket.Storage
 	logger     *zap.Logger
 	config     *config.Config
 }
 
-func NewUsage(repo postgres.Repository, bucketRepo bucket.Bucket, logger *zap.Logger, config *config.Config) *UsageStr {
-	return &UsageStr{repo: repo, bucketRepo: bucketRepo, logger: logger, config: config}
-
+func NewUsage(repo postgres.Repository, bucketRepo bucket.Storage,
+	logger *zap.Logger, config *config.Config) *Handler {
+	return &Handler{repo: repo, bucketRepo: bucketRepo, logger: logger, config: config}
 }
 
-func (u *UsageStr) Auth(ctx context.Context, login string, password string, ip string) error {
-	ctx, cancel := context.WithTimeout(ctx, time.Duration(a.config.ContextTimeout)*time.Millisecond)
+func (u *Handler) Auth(ctx context.Context, login string, password string, ip string) error {
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(u.config.ContextTimeout)*time.Millisecond)
 	defer cancel()
 
 	if login == "" {
@@ -56,6 +56,7 @@ func (u *UsageStr) Auth(ctx context.Context, login string, password string, ip s
 	if err != nil {
 		return err
 	}
+
 	switch iplist {
 	case "whitelist":
 		return nil
@@ -77,15 +78,17 @@ func (u *UsageStr) Auth(ctx context.Context, login string, password string, ip s
 			u.config.IPCapacity},
 	}
 	for _, check := range checks {
-		//check := check
+		check := check
+
 		g.Go(func() error {
 			return u.bucketRepo.Add(ctx, check.key, check.capacity, time.Duration(u.config.Rate)*time.Second)
 		})
 	}
+
 	return g.Wait()
 }
 
-func (u *UsageStr) Drop(ctx context.Context, login string, ip string) error {
+func (u *Handler) Drop(ctx context.Context, login string, ip string) error {
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(u.config.ContextTimeout)*time.Millisecond)
 	defer cancel()
 
@@ -100,18 +103,19 @@ func (u *UsageStr) Drop(ctx context.Context, login string, ip string) error {
 	return u.bucketRepo.Drop(ctx, []string{"lgn_" + login, "ip" + ip})
 }
 
-func (u *UsageStr) AddToBlacklist(ctx context.Context, subnet string) error {
-	сtx, cancel := context.WithTimeout(ctx, time.Duration(u.config.ContextTimeout)*time.Millisecond)
+func (u *Handler) AddToBlacklist(ctx context.Context, subnet string) error {
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(u.config.ContextTimeout)*time.Millisecond)
 	defer cancel()
 
 	_, _, err := net.ParseCIDR(subnet)
 	if err != nil {
 		return err
 	}
+
 	return u.repo.AddToBlacklist(ctx, subnet)
 }
 
-func (u *UsageStr) RemoveFromBlacklist(ctx context.Context, subnet string) error {
+func (u *Handler) RemoveFromBlacklist(ctx context.Context, subnet string) error {
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(u.config.ContextTimeout)*time.Millisecond)
 	defer cancel()
 
@@ -119,10 +123,11 @@ func (u *UsageStr) RemoveFromBlacklist(ctx context.Context, subnet string) error
 	if err != nil {
 		return err
 	}
+
 	return u.repo.RemoveFromBlacklist(ctx, subnet)
 }
 
-func (u *UsageStr) AddToWhitelist(ctx context.Context, subnet string) error {
+func (u *Handler) AddToWhitelist(ctx context.Context, subnet string) error {
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(u.config.ContextTimeout)*time.Millisecond)
 	defer cancel()
 
@@ -130,15 +135,18 @@ func (u *UsageStr) AddToWhitelist(ctx context.Context, subnet string) error {
 	if err != nil {
 		return err
 	}
+
 	return u.repo.AddToWhitelist(ctx, subnet)
 }
 
-func (u *UsageStr) RemoveFromWhitelist(ctx context.Context, subnet string) error {
+func (u *Handler) RemoveFromWhitelist(ctx context.Context, subnet string) error {
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(u.config.ContextTimeout)*time.Millisecond)
 	defer cancel()
+
 	_, _, err := net.ParseCIDR(subnet)
 	if err != nil {
 		return err
 	}
+
 	return u.repo.RemoveFromWhitelist(ctx, subnet)
 }

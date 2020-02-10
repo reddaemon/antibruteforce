@@ -1,0 +1,17 @@
+
+environment: dev
+debug: true
+url: :8080
+#bucket rate in seconds. default value 60
+Rate: 60
+LoginCapacity: 10
+Passwordapacity: 100
+IpCapacity: 1000
+#context timeout in ms
+contextTimeout: 500
+db:
+  - user: antibruteforce
+  - pass: changeme
+  - host: postgres
+  - port: 5432
+  - name: antibruteforce
