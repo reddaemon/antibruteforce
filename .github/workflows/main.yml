@@ -1,0 +1,13 @@
+name: Antibruteforce service
+on: [push]
+
+jobs:
+  golangci-lint:
+    runs-on: ubuntu-latest
+    name: run golangci-lint
+    steps:
+    - name: 1111
+      uses: docker://golangci/golangci-lint
+      run: |
+        make precommit
+
