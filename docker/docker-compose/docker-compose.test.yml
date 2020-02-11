@@ -1,6 +1,18 @@
 version: '3.7'
 
 services:
+  integration_tests:
+    build:
+      context: ../..
+      dockerfile: docker/integr_test/Dockerfile
+    command: "true"
+    networks:
+      - db
+      - antibruteforce
+    environment:
+      GRPC_SERVICE: "antibruteforce:8080"
+    depends_on:
+      - antibruteforce
   antibruteforce:
     build:
       context: ../..
@@ -11,10 +23,10 @@ services:
       - ../../config.yml:/opt/antibruteforce/config.yaml
     networks:
       - db
+      - antibruteforce
     depends_on:
       - db
     restart: on-failure
-
   db:
     image: "postgres:11-alpine"
     environment:
@@ -27,7 +39,8 @@ services:
       - ../../db/migrations/001.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - db
-
 networks:
   db:
+    driver: bridge
+  antibruteforce:
     driver: bridge

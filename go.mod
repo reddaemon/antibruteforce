@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/cockroachdb/apd v1.1.0 // indirect
+	github.com/cucumber/godog v0.8.1
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
 	github.com/golang/protobuf v1.3.1
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect

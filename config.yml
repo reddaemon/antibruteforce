@@ -12,6 +12,6 @@ contextTimeout: 500
 db:
   - user: antibruteforce
   - pass: changeme
-  - host: postgres
+  - host: db
   - port: 5432
   - name: antibruteforce
