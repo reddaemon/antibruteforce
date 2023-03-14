@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func init() { // nolint
+func init() { //nolint
 	drop.PersistentFlags().StringVarP(&address, "address", "a", "localhost:8080", "server address")
 	drop.PersistentFlags().StringVarP(&login, "login", "l", "", "login to drop")
 	drop.PersistentFlags().StringVarP(&ip, "ip", "i", "", "ip to drop")
@@ -26,7 +26,12 @@ var drop = &cobra.Command{ //nolint
 		if err != nil {
 			log.Fatalf("unable to connect: %v", err)
 		}
-		defer conn.Close()
+		defer func(conn *grpc.ClientConn) {
+			err := conn.Close()
+			if err != nil {
+				log.Fatalf("%s", err.Error())
+			}
+		}(conn)
 		c := api.NewAntiBruteforceClient(conn)
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 		defer cancel()

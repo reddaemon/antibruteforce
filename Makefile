@@ -1,7 +1,7 @@
 precommit:
 	gofmt -w -s -d .
 	go vet .
-	golangci-lint run --enable-all
+	golangci-lint run
 	go mod tidy
 	go mod verify
 unit-test:

@@ -8,14 +8,14 @@ import (
 )
 
 var (
-	subnet  string // nolint
-	address string // nolint
-	login   string // nolint
-	ip      string // nolint
+	subnet  string //nolint
+	address string //nolint
+	login   string //nolint
+	ip      string //nolint
 )
 
 // rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{ // nolint
+var rootCmd = &cobra.Command{ //nolint
 	Use:   "antibruteforce",
 	Short: "antibruteforce",
 	Long:  `antibruteforce`,
