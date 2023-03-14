@@ -11,7 +11,7 @@ import (
 )
 
 // whitelistCmd represents the whitelist command
-var whitelistCmd = &cobra.Command{ // nolint
+var whitelistCmd = &cobra.Command{ //nolint
 	Use:   "whitelist",
 	Short: "whitelist",
 	Long:  `whitelist`,
@@ -20,7 +20,7 @@ var whitelistCmd = &cobra.Command{ // nolint
 	},
 }
 
-func init() { // nolint
+func init() { //nolint
 	whitelistAdd.PersistentFlags().StringVarP(&address, "address", "a", "localhost:8080", "server address")
 	whitelistAdd.PersistentFlags().StringVarP(&subnet, "subnet", "s", "", "subnet")
 
@@ -30,7 +30,7 @@ func init() { // nolint
 	whitelistCmd.AddCommand(whitelistAdd, whitelistRemove)
 }
 
-var whitelistAdd = &cobra.Command{ // nolint
+var whitelistAdd = &cobra.Command{ //nolint
 	Use:   "add",
 	Short: "add to whitelist",
 	Long:  "add to whitelist",
@@ -39,7 +39,13 @@ var whitelistAdd = &cobra.Command{ // nolint
 		if err != nil {
 			log.Fatalf("unable to connect: %v", err)
 		}
-		defer conn.Close()
+		defer func(conn *grpc.ClientConn) {
+			err := conn.Close()
+			if err != nil {
+				log.Fatalf("%s", err.Error())
+
+			}
+		}(conn)
 		c := api.NewAntiBruteforceClient(conn)
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 		defer cancel()
@@ -51,7 +57,7 @@ var whitelistAdd = &cobra.Command{ // nolint
 	},
 }
 
-var whitelistRemove = &cobra.Command{ // nolint
+var whitelistRemove = &cobra.Command{ //nolint
 	Use:   "remove",
 	Short: "remove",
 	Long:  "remove",

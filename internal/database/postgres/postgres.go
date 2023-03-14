@@ -20,11 +20,11 @@ type Repository interface {
 }
 
 type PsqlRepository struct {
-	*sqlx.DB //nolint
-	logger   *zap.Logger
+	*sqlx.DB
+	logger *zap.Logger
 }
 
-func NewPsqlRepository(DB *sqlx.DB, logger *zap.Logger) *PsqlRepository { // nolint
+func NewPsqlRepository(DB *sqlx.DB, logger *zap.Logger) *PsqlRepository {
 	return &PsqlRepository{DB: DB, logger: logger}
 }
 

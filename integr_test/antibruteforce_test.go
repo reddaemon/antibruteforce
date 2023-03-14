@@ -3,6 +3,7 @@ package tests
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"os"
@@ -19,7 +20,12 @@ func (a *apiTest) iCallGrpcMethod(method string) error {
 	if err != nil {
 		return fmt.Errorf("unable to connect: %v", err)
 	}
-	defer cc.Close()
+	defer func(cc *grpc.ClientConn) {
+		err := cc.Close()
+		if err != nil {
+			log.Printf("%s", err.Error())
+		}
+	}(cc)
 
 	c := api.NewAntiBruteforceClient(cc)
 	ctx, cancel := context.WithTimeout(context.Background(), 400*time.Millisecond)
@@ -52,6 +58,7 @@ func (a *apiTest) iCallGrpcMethod(method string) error {
 			&api.RemoveFromBlacklistRequest{
 				Subnet: a.subnet,
 			})
+		a.responseError = err
 	case "AddToWhitelist":
 		_, err = c.AddToWhitelist(ctx, &api.AddToWhitelistRequest{
 			Subnet: a.subnet})
@@ -86,10 +93,6 @@ func (a *apiTest) responseErrorShouldBe(error string) error {
 
 	return nil
 
-}
-
-func ipIs(arg1 string) error {
-	return godog.ErrPending
 }
 
 func FeatureContext(s *godog.Suite) {

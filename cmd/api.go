@@ -21,7 +21,7 @@ import (
 )
 
 // apiCmd represents the api command
-var apiCmd = &cobra.Command{ // nolint
+var apiCmd = &cobra.Command{ //nolint
 	Use:   "api",
 	Short: "start api",
 	Long:  `start api`,
@@ -66,6 +66,6 @@ var apiCmd = &cobra.Command{ // nolint
 	},
 }
 
-func init() { // nolint
+func init() { //nolint
 	rootCmd.AddCommand(apiCmd)
 }

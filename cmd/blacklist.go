@@ -12,7 +12,7 @@ import (
 )
 
 // blacklistCmd represents the blacklist command
-var blacklistCmd = &cobra.Command{ // nolint
+var blacklistCmd = &cobra.Command{ //nolint
 	Use:   "blacklist",
 	Short: "blacklist",
 	Long:  `blacklist`,
@@ -21,7 +21,7 @@ var blacklistCmd = &cobra.Command{ // nolint
 	},
 }
 
-func init() { // nolint
+func init() { //nolint
 	blacklistAdd.PersistentFlags().StringVarP(&address, "address", "a", "localhost:8080", "server address")
 	blacklistAdd.PersistentFlags().StringVarP(&subnet, "subnet", "s", "", "subnet")
 
@@ -39,7 +39,13 @@ var blacklistAdd = &cobra.Command{ //nolint
 		if err != nil {
 			log.Fatalf("unable to connect: %v", err)
 		}
-		defer conn.Close()
+		defer func(conn *grpc.ClientConn) {
+			err := conn.Close()
+			if err != nil {
+				log.Fatalf("%s", err.Error())
+
+			}
+		}(conn)
 		c := api.NewAntiBruteforceClient(conn)
 
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
@@ -62,7 +68,13 @@ var blacklistRemove = &cobra.Command{ //nolint
 		if err != nil {
 			log.Fatalf("unable to connect: %v", err)
 		}
-		defer conn.Close()
+		defer func(conn *grpc.ClientConn) {
+			err := conn.Close()
+			if err != nil {
+				log.Fatalf("%s", err.Error())
+
+			}
+		}(conn)
 		c := api.NewAntiBruteforceClient(conn)
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 		defer cancel()
