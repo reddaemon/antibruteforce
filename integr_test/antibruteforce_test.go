@@ -9,14 +9,14 @@ import (
 	"os"
 
 	"github.com/cucumber/godog"
-	api "github.com/reddaemon/antibruteforce/protofiles"
+	"github.com/reddaemon/antibruteforce/protofiles/protofiles/api"
 	"google.golang.org/grpc"
 )
 
 var grpcService = os.Getenv("GRPC_SERVICE")
 
 func (a *apiTest) iCallGrpcMethod(method string) error {
-	cc, err := grpc.Dial(grpcService, grpc.WithInsecure())
+	cc, err := grpc.NewClient(grpcService, grpc.WithTransportCredentials(nil))
 	if err != nil {
 		return fmt.Errorf("unable to connect: %v", err)
 	}
@@ -95,13 +95,15 @@ func (a *apiTest) responseErrorShouldBe(error string) error {
 
 }
 
-func FeatureContext(s *godog.Suite) {
+func FeatureContext(s *godog.ScenarioContext) {
 	var t apiTest
-	s.BeforeScenario(func(i interface{}) {
+
+	s.Before(func(ctx context.Context, s *godog.Scenario) (context.Context, error) {
 		t.login = ""
 		t.password = ""
 		t.ip = ""
 		t.responseError = nil
+		return ctx, nil
 	})
 
 	s.Step(`^login is "([^"]*)"$`, t.loginIs)

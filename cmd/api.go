@@ -16,7 +16,7 @@ import (
 	"github.com/reddaemon/antibruteforce/internal/service/api/server"
 	"github.com/reddaemon/antibruteforce/internal/service/api/usage"
 	"github.com/reddaemon/antibruteforce/logger"
-	grpcapi "github.com/reddaemon/antibruteforce/protofiles"
+	grpcapi "github.com/reddaemon/antibruteforce/protofiles/protofiles/api"
 	"github.com/spf13/cobra"
 )
 

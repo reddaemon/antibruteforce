@@ -6,7 +6,7 @@ import (
 
 	"context"
 
-	api "github.com/reddaemon/antibruteforce/protofiles"
+	api "github.com/reddaemon/antibruteforce/protofiles/protofiles/api"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 )
@@ -35,7 +35,7 @@ var blacklistAdd = &cobra.Command{ //nolint
 	Use:   "add",
 	Short: "add to blacklist",
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+		conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(nil))
 		if err != nil {
 			log.Fatalf("unable to connect: %v", err)
 		}
@@ -64,7 +64,7 @@ var blacklistRemove = &cobra.Command{ //nolint
 	Short: "remove from blacklist",
 	Long:  `remove from blacklist`,
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+		conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(nil))
 		if err != nil {
 			log.Fatalf("unable to connect: %v", err)
 		}
