@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	api "github.com/reddaemon/antibruteforce/protofiles"
+	api "github.com/reddaemon/antibruteforce/protofiles/protofiles/api"
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -22,7 +22,7 @@ var drop = &cobra.Command{ //nolint
 	Short: "Drop",
 	Long:  "Drop",
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+		conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(nil))
 		if err != nil {
 			log.Fatalf("unable to connect: %v", err)
 		}

@@ -4,11 +4,12 @@ import (
 	"context"
 
 	"github.com/reddaemon/antibruteforce/internal/service/api/usage"
-	api "github.com/reddaemon/antibruteforce/protofiles"
+	api "github.com/reddaemon/antibruteforce/protofiles/protofiles/api"
 	"go.uber.org/zap"
 )
 
 type Server struct {
+	api.UnimplementedAntiBruteforceServer
 	usage  usage.Usage
 	logger *zap.Logger
 }
